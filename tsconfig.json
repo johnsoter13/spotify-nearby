@@ -1,6 +1,17 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "types": ["expo-router"]
+  },
+  "include": [
+    "nativewind.d.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "nativewind-env.d.ts",
+    "expo-router.d.ts"
+  ]
 }
