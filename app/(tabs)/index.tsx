@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { Link } from 'expo-router';
 
 interface NearbyListener {
   id: number;
