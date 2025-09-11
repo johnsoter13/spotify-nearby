@@ -10,11 +10,14 @@ export default function Index() {
       const token = await getToken();
       setAuthed(!!token);
     })();
+
+    
   }, []);
 
   if (authed === null) {
     return null; // or splash screen
   }
+
 
   return <Redirect href={authed ? "/(tabs)" : "/(auth)/login"} />;
 }
