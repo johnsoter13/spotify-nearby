@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "./styles/index.css"
+import "../styles/index.css"
 import { Stack } from 'expo-router';
 
 export default function RootLayout() {

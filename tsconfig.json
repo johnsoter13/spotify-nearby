@@ -12,8 +12,8 @@
   },
   "include": [
     "nativewind.d.ts",
-    "app/**/*.ts",
-    "app/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "nativewind-env.d.ts",
     "expo-router.d.ts"
   ],
