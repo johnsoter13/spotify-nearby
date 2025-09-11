@@ -6,9 +6,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "types": ["expo-router"],
-    "paths": {
-      "@lib/*": ["./lib/*"]
-    }
+    // "paths": {
+    //   "@lib/*": ["./lib/*"]
+    // }
   },
   "include": [
     "nativewind.d.ts",

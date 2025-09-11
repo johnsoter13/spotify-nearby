@@ -3,8 +3,8 @@ import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import { API_BASE, APP_SCHEME } from "@lib/config";
-import { saveToken, getToken } from "@lib/auth";
+import { API_BASE, APP_SCHEME } from "../../lib/config";
+import { saveToken, getToken } from "../../lib/auth";
 
 export default function LoginScreen() {
   const router = useRouter();

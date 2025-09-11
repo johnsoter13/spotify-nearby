@@ -1,5 +1,5 @@
 import { Redirect } from "expo-router";
-import { getToken } from "@lib/auth";
+import { getToken } from "../lib/auth";
 import { useEffect, useState } from "react";
 
 export default function Index() {

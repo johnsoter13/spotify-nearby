@@ -8,7 +8,7 @@ export default function AuthLayout() {
         animation: "slide_from_right", // Optional: nicer transition
       }}
     >
-      <Stack.Screen name="login" />
+      <Stack.Screen name="login" options={{ headerShown: true, title: 'Login' }} />
       {/* If you add more auth screens later: */}
       {/* <Stack.Screen name="signup" /> */}
       {/* <Stack.Screen name="forgot-password" /> */}
