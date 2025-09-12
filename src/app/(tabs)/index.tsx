@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { useMe } from "../../hooks/useMe";
 import ScreenWrapper from "../components/ScreenWrapper";
 
@@ -46,7 +45,9 @@ export default function HomeScreen() {
     isSharing: true,
   };
 
-  const { data, isLoading, error } = useMe();
+  const { data, isLoading } = useMe();
+
+  console.log(data);
 
   const toggleLike = (id: number) => {
     const newLiked = new Set(likedTracks);
@@ -59,12 +60,6 @@ export default function HomeScreen() {
   };
 
   return (
-    // <LinearGradient
-    //   colors={["#6b21a8", "#1e3a8a", "#312e81"]} // purple-900 → blue-900 → indigo-900
-    //   start={{ x: 0, y: 0 }}
-    //   end={{ x: 1, y: 1 }}
-    //   style={{flex: 1}}
-    // >
     <ScreenWrapper>
       <View className="flex-1 text-white">
         <View className="px-6 pt-12 pb-6">
@@ -77,6 +72,24 @@ export default function HomeScreen() {
                 </Text>
               </View>
             </View>
+            {!isLoading && <TouchableOpacity
+              onPress={() => {
+                // later: router.push("/profile")
+              }}
+              className="w-10 h-10 rounded-full overflow-hidden bg-white/20 items-center justify-center"
+            >
+              {data?.images?.[0]?.url ? (
+                <Image
+                  source={{ uri: data.images[0].url }}
+                  className="w-full h-full"
+                  resizeMode="cover"
+                />
+              ) : (
+                <Text className="text-white font-bold">
+                  {data?.display_name?.charAt(0) ?? "?"}
+                </Text>
+              )}
+            </TouchableOpacity>}
           </View>
           {currentlyPlaying.isSharing && (
             <View className="bg-white/15 rounded-2xl p-4 mb-6 border border-white/20">
