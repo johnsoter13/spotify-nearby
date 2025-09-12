@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
+import { useMe } from "../../hooks/useMe";
 
 interface NearbyListener {
   id: number;
@@ -43,6 +44,10 @@ export default function HomeScreen() {
     artist: "Lil Nas X ft. Jack Harlow",
     isSharing: true,
   };
+
+  const { data, isLoading, error } = useMe();
+
+  // console.log(data);
 
   const toggleLike = (id: number) => {
     const newLiked = new Set(likedTracks);
