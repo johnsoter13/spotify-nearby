@@ -9,9 +9,6 @@ export default function AuthLayout() {
       }}
     >
       <Stack.Screen name="login" options={{ headerShown: true, title: 'Login' }} />
-      {/* If you add more auth screens later: */}
-      {/* <Stack.Screen name="signup" /> */}
-      {/* <Stack.Screen name="forgot-password" /> */}
     </Stack>
   );
 }

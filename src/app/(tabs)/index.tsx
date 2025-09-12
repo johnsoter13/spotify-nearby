@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMe } from "../../hooks/useMe";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 interface NearbyListener {
   id: number;
@@ -47,8 +48,6 @@ export default function HomeScreen() {
 
   const { data, isLoading, error } = useMe();
 
-  // console.log(data);
-
   const toggleLike = (id: number) => {
     const newLiked = new Set(likedTracks);
     if (newLiked.has(id)) {
@@ -60,12 +59,13 @@ export default function HomeScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={["#6b21a8", "#1e3a8a", "#312e81"]} // purple-900 → blue-900 → indigo-900
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{flex: 1}}
-    >
+    // <LinearGradient
+    //   colors={["#6b21a8", "#1e3a8a", "#312e81"]} // purple-900 → blue-900 → indigo-900
+    //   start={{ x: 0, y: 0 }}
+    //   end={{ x: 1, y: 1 }}
+    //   style={{flex: 1}}
+    // >
+    <ScreenWrapper>
       <View className="flex-1 text-white">
         <View className="px-6 pt-12 pb-6">
           <View className="flex-row items-center justify-between mb-6">
@@ -193,6 +193,6 @@ export default function HomeScreen() {
           )}
         </ScrollView>
       </View>
-    </LinearGradient>
+    </ScreenWrapper>
   );
 }
