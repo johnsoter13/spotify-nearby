@@ -47,8 +47,6 @@ export default function HomeScreen() {
 
   const { data, isLoading } = useMe();
 
-  console.log(data);
-
   const toggleLike = (id: number) => {
     const newLiked = new Set(likedTracks);
     if (newLiked.has(id)) {
