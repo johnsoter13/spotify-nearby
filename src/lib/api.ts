@@ -1,35 +1,64 @@
+// src/api/api.ts
 import { API_BASE } from "./config";
-import { clearToken, getToken, saveToken } from "../lib/auth";
+import { getToken, saveToken } from "../lib/auth";
 import { logout } from "./session";
 
 /**
- * Internal helper to refresh the app token
+ * Single-flight refresh promise so concurrent 401s don't spam /auth/refresh.
  */
-async function refreshToken(): Promise<string | null> {
-  try {
-    const res = await fetch(`${API_BASE}/auth/refresh`, {
-      method: "POST",
-      credentials: "include", // important if backend uses httpOnly cookies
+let refreshInFlight: Promise<string | null> | null = null;
+
+async function doRefresh(): Promise<string | null> {
+  const current = await getToken(); // may be expired; we still send it
+  const res = await fetch(`${API_BASE}/auth/refresh`, {
+    method: "POST",
+    credentials: "include",
+    headers: current ? { Authorization: `Bearer ${current}` } : {},
+  });
+
+  if (!res.ok) return null;
+
+  const data = await safeJson(res);
+  if (data?.token) {
+    await saveToken(data.token);
+    return data.token;
+  }
+  return null;
+}
+
+async function ensureFreshToken(): Promise<string | null> {
+  if (!refreshInFlight) {
+    refreshInFlight = doRefresh().finally(() => {
+      // allow next refresh after this one settles
+      refreshInFlight = null;
     });
+  }
+  return refreshInFlight;
+}
 
-    if (!res.ok) {
-      return null;
-    }
+function withAuthHeaders(init: RequestInit, token: string | null): RequestInit {
+  return {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(init.headers || {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    credentials: "include", // keep for cookie-based flows too
+  };
+}
 
-    const data = await res.json();
-    if (data?.token) {
-      await saveToken(data.token);
-      return data.token;
-    }
-    return null;
-  } catch (e) {
-    console.error("Refresh token failed:", e);
-    return null;
+async function safeJson(res: Response) {
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return { raw: text };
   }
 }
 
 /**
- * Generic fetch wrapper that automatically attaches the stored JWT token.
+ * Universal API call: attaches JWT, refreshes on 401, retries once.
  */
 export async function api<T>(
   path: string,
@@ -38,37 +67,26 @@ export async function api<T>(
 ): Promise<T> {
   let token = await getToken();
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(init.headers || {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    credentials: "include",
-  });
+  // First attempt
+  let res = await fetch(`${API_BASE}${path}`, withAuthHeaders(init, token));
 
+  // If unauthorized, try refresh + retry once
   if (res.status === 401 && retry) {
-    // Try refreshing token
-    token = await refreshToken();
-
-    if (token) {
-      // Retry original request once
-      return api<T>(path, init, false);
-    } else {
-      // No valid refresh, clear and throw
-      await logout();   // 👈 redirects user out of the app
-      throw new Error("Unauthorized");
+    const newToken = await ensureFreshToken();
+    if (!newToken) {
+      await logout();
+      throw new Error("Unauthorized: refresh failed");
     }
+    res = await fetch(`${API_BASE}${path}`, withAuthHeaders(init, newToken));
   }
 
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(
-      `API error ${res.status}: ${text || res.statusText}`
-    );
+    const data = await safeJson(res);
+    const msg = typeof data?.error === "string"
+      ? data.error
+      : data?.message || res.statusText;
+    throw new Error(`API ${res.status}: ${msg}`);
   }
 
-  return res.json() as Promise<T>;
+  return (await safeJson(res)) as T;
 }
-
