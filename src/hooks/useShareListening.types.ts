@@ -6,7 +6,7 @@ export interface ShareListeningInput {
   energy?: number;
   latitude?: number;
   longitude?: number;
-  startedAt: string; // ISO
-  endedAt: string;   // ISO
-  clientAt?: string; // ISO
+  startedAt: string;
+  endedAt: string;  
+  clientAt?: string;
 }

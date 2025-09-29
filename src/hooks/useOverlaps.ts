@@ -1,4 +1,3 @@
-// hooks/useOverlaps.ts
 import { useEffect, useMemo, useState } from "react";
 import * as Location from "expo-location";
 import { useQuery } from "@tanstack/react-query";
