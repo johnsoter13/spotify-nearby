@@ -4,8 +4,8 @@ import { useNowPlaying } from "../../hooks/useNowPlaying";
 export default function NowPlaying(){
   const { data, isLoading } = useNowPlaying();
 
-  if (isLoading) return <Text>Loading...</Text>;
-  if (!data?.isPlaying) return <Text>Not playing anything</Text>;
+  if (isLoading) return <Text className="text-white/70 mt-2">Loading...</Text>;
+  if (!data?.isPlaying) return <Text className="text-white/70 mt-2">Not playing anything</Text>;
 
   return (
     <View className="bg-white/15 rounded-2xl p-4 mb-6 border border-white/20">
